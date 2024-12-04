@@ -148,7 +148,7 @@ export default function AppManager() {
 
   function generateSubs() {
     if (!subsRef.current) {
-      if (isAsa) {
+      if (isAsa.current === true) {
         return '&sub_id_1=asa';
       }
       return '';
@@ -184,14 +184,6 @@ export default function AppManager() {
 
   // ініціалізація AppManager
   async function initAppManager() {
-    try {
-      await AppleAdsAttributionInstance.getAdServicesAttributionData().then(
-        res => {
-          // робимо перевірку на аса
-          isAsa.current = res.data.attribution;
-        },
-      );
-    } catch (_) {}
     if (checkDateStart()) {
       // перевіряємо дату
       await Storage.get('link').then(res => {
