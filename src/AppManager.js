@@ -124,13 +124,10 @@ export default function AppManager() {
   );
 
   async function getAsaAttribution() {
-    try {
-      await AppleAdsAttributionInstance.getAdServicesAttributionData().then((res) => {
-        res.data.attribution === true ? subsRef.current = 'asa' : null;
-      });
-    } catch (err) {
-
-    }
+    const adServicesAttributionData = await AppleAdsAttributionInstance.getAdServicesAttributionData();
+    let attribution;
+    ({ attribution } = adServicesAttributionData);
+    if (attribution === true) {subsRef.current = 'asa';}
     generateFinish();
   }
 
