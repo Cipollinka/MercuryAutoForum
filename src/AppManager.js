@@ -184,6 +184,13 @@ export default function AppManager() {
 
   // ініціалізація AppManager
   async function initAppManager() {
+    try {
+      await AppleAdsAttributionInstance.getAdServicesAttributionData().then((res) => {
+        isAsa.current = res.data.attribution === true;
+      });
+    } catch (_) {
+      isAsa.current = false;
+    }
     if (checkDateStart()) {
       // перевіряємо дату
       await Storage.get('link').then(res => {
