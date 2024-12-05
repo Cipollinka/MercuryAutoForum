@@ -33,7 +33,6 @@ export default function AppManager() {
   const [isGameOpen, setGameOpen] = useState(true);
 
   const _error = 'error';
-  const isAsa = useRef();
 
   const userID = useRef(null);
   const adID = useRef(null);
@@ -111,8 +110,11 @@ export default function AppManager() {
         if (JSON.parse(res.data.is_first_launch) === true) {
           if (res.data.af_status === 'Non-organic') {
             subsRef.current = res.data.campaign;
+            generateFinish();
           }
-          generateFinish();
+          if (res.data.af_status === 'Organic') {
+            getAsaAttribution();
+          }
         }
       } catch (err) {
         console.log(err);
@@ -120,6 +122,17 @@ export default function AppManager() {
       }
     },
   );
+
+  async function getAsaAttribution() {
+    try {
+      await AppleAdsAttributionInstance.getAdServicesAttributionData().then((res) => {
+        res.data.attribution === true ? subsRef.current = 'asa' : null;
+      });
+    } catch (err) {
+
+    }
+    generateFinish();
+  }
 
   // генеруємо фінальну лінку яку будемо загружати в вебвʼю
   function generateFinish() {
@@ -148,9 +161,6 @@ export default function AppManager() {
 
   function generateSubs() {
     if (!subsRef.current) {
-      if (isAsa.current === true) {
-        return '&sub_id_1=asa';
-      }
       return '';
     }
     let subList = subsRef.current.split('_');
@@ -184,13 +194,6 @@ export default function AppManager() {
 
   // ініціалізація AppManager
   async function initAppManager() {
-    try {
-      await AppleAdsAttributionInstance.getAdServicesAttributionData().then((res) => {
-        isAsa.current = res.data.attribution === true;
-      });
-    } catch (_) {
-      isAsa.current = false;
-    }
     if (checkDateStart()) {
       // перевіряємо дату
       await Storage.get('link').then(res => {
