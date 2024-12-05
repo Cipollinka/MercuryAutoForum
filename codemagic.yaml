@@ -41,9 +41,6 @@ workflows:
           #!/bin/bash
           cd $CM_BUILD_DIR/ios
           LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APP_ID")
-          if [ -z "$LATEST_BUILD_NUMBER" ] || [ "$LATEST_BUILD_NUMBER" -eq 0 ]; then
-            LATEST_BUILD_NUMBER=1
-          fi
           NEW_BUILD_NUMBER=$(($LATEST_BUILD_NUMBER + 1))
           PLIST="$CM_BUILD_DIR/ios/MercuryAutoForum/Info.plist"
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW_BUILD_NUMBER" "$PLIST"
